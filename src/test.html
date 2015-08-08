@@ -1,29 +1,88 @@
 <!doctype html>
 <html>
 	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
 		<script src="https://www.youtube.com/player_api"></script>
 	</head>
 	<body ng-app>
 		<div>
-			<div id="ytplayer"></div>
+			<div id="ytplayer" ></div>
+			<p id="play_time"></p>
+			<div>
+				<p id="current_tab"></p>
+				<p id="current_lyric"></p>
+				<p id="next_tab"></p>
+				<p id="next_lyric"></p>
+			</div>
 			<script>
 			var player;
+			var current_tab = document.getElementById('current_tab');
+			var current_lyric = document.getElementById('current_lyric');
+			var next_tab = document.getElementById('next_tab');
+			var next_lyric = document.getElementById('next_lyric');
+			var current_tabs_lyrics = 0;
+
+			var tab = {
+				tabs_lyrics: []
+			}
+			tab.tabs_lyrics.push({
+				time: 0,
+				tab: "E G B A",
+				lyric: ""
+			});
+
+			tab.tabs_lyrics.push({
+				time: 20,
+				tab: "E    G     B     A",
+				lyric: "SEUS OLHOS E SEUS OLHARES"
+			});
+
+			tab.tabs_lyrics.push({
+				time: 24,
+				tab: "E     G      B     A",
+				lyric: "MILHARES DE TENTACOES"
+			});
+			tab.tabs_lyrics.push({
+				time: 9999,
+				tab: "",
+				lyric: ""
+			});
+
 			function onYouTubePlayerAPIReady() {
 				player = new YT.Player('ytplayer', {
 					height: '390',
 					width: '640',
-					autoplay: 1,
-					videoId: 'M7lc1UVf-VE'
+					videoId: '6dLIkF0lxjs',
+					events: {
+            'onReady': function(e){e.target.playVideo();}
+					}
 				});
+
+				var writeTabsLyrics = function(){
+					current_tab.innerHTML = tab.tabs_lyrics[current_tabs_lyrics].tab;
+					current_lyric.innerHTML = tab.tabs_lyrics[current_tabs_lyrics].lyric;
+					next_tab.innerHTML = tab.tabs_lyrics[current_tabs_lyrics+1].tab;
+					next_lyric.innerHTML = tab.tabs_lyrics[current_tabs_lyrics+1].lyric;
+					console.log("tabs lyrics atualizados -> "+current_tabs_lyrics);
+				}
+				writeTabsLyrics();
+				setInterval(function(){
+					seconds = player.getCurrentTime();
+					document.getElementById('play_time').innerHTML = seconds;
+
+					for(var i=0;i<tab.tabs_lyrics.length;i++) {
+						console.log(seconds+"<"+tab.tabs_lyrics[i].time+"?");
+						if(seconds<tab.tabs_lyrics[i].time) {
+							current_tabs_lyrics = i-1;
+							console.log("current_tabs_lyrics = "+current_tabs_lyrics);
+							writeTabsLyrics();
+							break;
+						}
+					}
+				},500);
+
+
 			}
 			</script>
-			<hr>
-			
-			<label>Name:</label>
-			<input type="text" ng-model="yourName" placeholder="Enter a name here">
-			<hr>
-			<h1>Hello {{yourName}}!</h1>
 		</div>
 	</body>
 </html>
