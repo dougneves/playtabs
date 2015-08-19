@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://www.youtube.com/player_api"></script>
+	</head>
+	<body ng-app>
+		<div>
+			<div id="ytplayer" ></div>
+			<p id="play_time"></p>
+			<input name="tab_to_add" id="tab_to_add" style="font-family: monospace;" size="80"  maxlength="80"></input><br />
+			<input name="lyric_to_add" id="lyric_to_add" style="font-family: monospace;" size="80"  maxlength="80"></input><br />
+			<button id="add_tab_lyric">add tab lyric</button>
+			<div id="allsong" style="height: 100px; overflow: auto;">
+
+			</div>
+			<script>
+			var player;
+			var allsong = document.getElementById('allsong');
+			var current_tabs_lyrics = 0;
+
+			var tab = {
+				tabs_lyrics: []
+			};
+			
+			
+			
+			function onYouTubePlayerAPIReady() {
+				
+				player = new YT.Player('ytplayer', {
+					height: '390',
+					width: '640',
+					videoId: '6dLIkF0lxjs',
+					events: {
+            'onReady': function(e){e.target.playVideo();}
+					}
+				});
+				
+				var writeTabsLyrics = function() {
+					
+					var allSong = document.getElementById("allsong");
+					
+					allSong.innerHTML = "";
+					
+					tab.tabs_lyrics.sort(function(a,b){return a.time-b.time});
+					
+					for(var i=0;i<tab.tabs_lyrics.length;i++){
+						var newTabLyric = document.createElement("div");
+						var aSeconds = document.createElement("a");
+						var pTab = document.createElement("p");
+						var pLyric = document.createElement("p");
+						
+						var tl = tab.tabs_lyrics[i];
+						
+						aSeconds.appendChild(document.createTextNode(tl.time));
+						aSeconds.setAttribute("id",tl.time);
+						pTab.appendChild(document.createTextNode(tl.tab));
+						pLyric.appendChild(document.createTextNode(tl.lyric));
+						
+						newTabLyric.appendChild(aSeconds);
+						newTabLyric.appendChild(pTab);
+						newTabLyric.appendChild(pLyric);
+						
+						allSong.appendChild(newTabLyric);
+					}
+				}	
+				
+				document.getElementById("add_tab_lyric").onclick = function(){
+					var timeToAdd = seconds;
+					var tabToAdd = document.getElementById("tab_to_add");
+					var lyricToAdd = document.getElementById("lyric_to_add");
+					
+					tab.tabs_lyrics.push({
+						time: timeToAdd,
+						tab: tabToAdd.value,
+						lyric: lyricToAdd.value
+					});
+					writeTabsLyrics();
+				}
+				
+				setInterval(function(){
+					seconds = player.getCurrentTime();
+					document.getElementById('play_time').innerHTML = seconds;
+
+					for(var i=0;i<tab.tabs_lyrics.length;i++) {
+						console.log(seconds+"<"+tab.tabs_lyrics[i].time+"?");
+						if(seconds<tab.tabs_lyrics[i].time) {
+							var current_tabs_lyrics = i-1;
+							if(current_tabs_lyrics<1) current_tabs_lyrics=1;
+							document.location.hash = tab.tabs_lyrics[current_tabs_lyrics].time;
+							break;
+						}
+					}
+				},500);
+
+
+			}
+			</script>
+		</div>
+	</body>
+</html>
