@@ -1,0 +1,27 @@
+{
+  "name": "playtabs",
+  "version": "1.0.0",
+  "description": "A youtube guitar tabs app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dougneves/playtabs.git"
+  },
+  "keywords": [
+    "youtube",
+    "guitar",
+    "tabs"
+  ],
+  "author": "dougneves@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dougneves/playtabs/issues"
+  },
+  "homepage": "https://github.com/dougneves/playtabs#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
