@@ -1,10 +1,18 @@
-var appport = process.env.PORT;
-if(!appport) appport = 8284;
+var express = require('express');
+var app = express();
 
-var http = require('http');
+var APP_PORT = process.env.PORT ? process.env.PORT : 8284;
+console.log("Iniciando playtabs, tentando rodar na porta: " + APP_PORT)
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello Node.JS!');
-}).listen(appport);
-console.log('Server running in port '+appport);
+//Express settings -----
+app.set('views','./views');
+app.set('view engine', 'jade');
+//-----
+
+app.get('/', function (req, res) {
+  res.render('index', { title: 'Hey', message: 'Hello there!'});
+});
+
+app.listen(APP_PORT, function () {
+  console.log("Servidor iniciado na porta " + APP_PORT);
+});
